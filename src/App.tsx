@@ -17,7 +17,7 @@ const App = () => {
   const router = createBrowserRouter(
     createRoutesFromElements(
       <Route
-        index
+        path='/'
         element={<Root />}
         errorElement={
           <section>
