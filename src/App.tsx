@@ -6,8 +6,37 @@ import {
   sendPasswordResetEmail,
 } from 'firebase/auth';
 import { auth } from './services/firebase';
+import {
+  createBrowserRouter,
+  createRoutesFromElements,
+  Route,
+  RouterProvider,
+} from 'react-router-dom';
 
 const App = () => {
+  const router = createBrowserRouter(
+    createRoutesFromElements(
+      <Route
+        index
+        element={<Root />}
+        errorElement={
+          <section>
+            <div className='center_sect'>
+              <h1 className='sect_heading'>404</h1>
+              <h2 className='error_text'>Page not found</h2>
+            </div>
+          </section>
+        }
+      />
+    )
+  );
+
+  return <RouterProvider router={router} />;
+};
+
+export default App;
+
+const Root = () => {
   const getParameterByName = (name: string, url = window.location.href) => {
     const params = url.split('?')[1]?.split('&');
 
@@ -21,8 +50,8 @@ const App = () => {
     return '';
   };
 
-  // const mode = getParameterByName('mode')  'verifyEmail';
-  const mode: string = 'verifyEmail';
+  const mode = getParameterByName('mode');
+  // const mode: string = 'verifyEmail';
   const actionCode = getParameterByName('oobCode');
   const continueUrl = getParameterByName('continueUrl');
   const lang = getParameterByName('lang') || 'en';
@@ -51,6 +80,7 @@ const App = () => {
         handleVerify();
         break;
       default:
+        window.location.href = 'https://devie.netlify.app';
         return;
     }
   }, [mode]);
@@ -80,11 +110,9 @@ const App = () => {
             </main>
           </>
         ) : (
-          <></>
+          <h1>You are not supposed to be here</h1>
         )}
       </div>
     </section>
   );
 };
-
-export default App;

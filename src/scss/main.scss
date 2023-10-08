@@ -54,6 +54,11 @@ section {
     box-shadow: 0 0 5px $shw_clr_tnt;
     font-size: 1.5rem;
 
+    .error_text {
+      color: $txt_clr1;
+      font-family: $fnt_hdg2;
+    }
+
     .sect_heading {
       font-family: $fnt_hdg1;
       color: $txt_clr1;
