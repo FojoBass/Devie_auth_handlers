@@ -54,6 +54,82 @@ section {
     box-shadow: 0 0 5px $shw_clr_tnt;
     font-size: 1.5rem;
 
+    form {
+      .form_opts {
+        display: flex;
+        flex-direction: column;
+
+        .form_opt {
+          position: relative;
+          margin-bottom: 20px;
+          outline: none;
+
+          button[type='button'] {
+            position: absolute;
+            top: 50%;
+            right: 10px;
+            transform: translateY(-50%);
+            cursor: pointer;
+            background-color: transparent;
+            border: none;
+            color: $txt_clr1;
+            transition: all ease 0.3s;
+            padding: 8px;
+
+            &:hover {
+              color: $txt_clr3;
+            }
+          }
+
+          input {
+            width: 100%;
+            padding: 10px;
+            border: 1.5px solid $shw_clr_tnt;
+            border-radius: 5px;
+            outline: none;
+            transition: all ease 0.3s;
+            font-size: 1.2rem;
+            font-family: $fnt_spc1;
+            color: $txt_clr2;
+
+            &:focus {
+              border-color: $acc_clr;
+            }
+          }
+        }
+      }
+
+      button {
+        background-color: $acc_clr;
+        color: #fff;
+        border: none;
+        padding: 1rem 2rem;
+        font-size: 1.5rem;
+        border-radius: 0.5rem;
+        cursor: pointer;
+        transition: all ease 0.3s;
+
+        &:hover {
+          background-color: darken($acc_clr, 15);
+        }
+      }
+
+      .info_wrapper {
+        margin-top: 10px;
+        border-radius: 3px;
+        font-size: 1.2rem;
+        font-weight: bold;
+        letter-spacing: 0.1rem;
+        transition: height ease 0.3s;
+        height: 0;
+        overflow: hidden;
+
+        p {
+          padding: 5px 0;
+        }
+      }
+    }
+
     .error_text {
       color: $txt_clr1;
       font-family: $fnt_hdg2;
