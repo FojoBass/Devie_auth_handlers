@@ -54,6 +54,20 @@ section {
     box-shadow: 0 0 5px $shw_clr_tnt;
     font-size: 1.5rem;
 
+    .fail_verify {
+      color: $txt_clr2;
+      font-family: $fnt_spc1;
+      font-size: 1.5rem;
+    }
+
+    h3 {
+      margin-bottom: 10px;
+      font-family: $fnt_hdg2;
+      letter-spacing: 0.1rem;
+      color: $txt_clr1;
+      font-size: 1.8rem;
+    }
+
     form {
       .form_opts {
         display: flex;
@@ -141,15 +155,35 @@ section {
       font-size: 2.5rem;
       margin-bottom: 10px;
     }
+  }
+}
 
-    a {
-      display: inline-block;
-      margin-top: 5px;
-      color: $acc_clr;
+a {
+  display: inline-block;
+  margin-top: 5px;
+  color: $acc_clr;
 
-      &:hover {
-        text-decoration: none;
-      }
-    }
+  &:hover {
+    text-decoration: none;
+  }
+}
+
+.loading {
+  border-top: 10px solid $txt_clr3;
+  border-bottom: 10px solid $txt_clr3;
+  border-right: 10px solid transparent;
+  border-left: 10px solid transparent;
+  display: inline-block;
+  border-radius: 5px;
+  animation: loadingAnim 1s ease-in-out 0s infinite;
+}
+
+@keyframes loadingAnim {
+  0% {
+    transform: rotate(0deg);
+  }
+
+  100% {
+    transform: rotate(360deg);
   }
 }

@@ -4,6 +4,8 @@ import {
   checkActionCode,
   applyActionCode,
   sendPasswordResetEmail,
+  verifyPasswordResetCode,
+  confirmPasswordReset,
 } from 'firebase/auth';
 import { auth } from './services/firebase';
 import {
@@ -64,8 +66,8 @@ const Root = () => {
     return '';
   };
 
-  // const mode = getParameterByName('mode');
-  const mode: string = 'resetPassword';
+  const mode = getParameterByName('mode');
+  // const mode: string = 'resetPassword';
   const actionCode = getParameterByName('oobCode');
   const continueUrl = getParameterByName('continueUrl');
 
@@ -82,6 +84,10 @@ const Root = () => {
   });
   const infoRef = useRef<HTMLParagraphElement | null>(null);
   const infoWrapperRef = useRef<HTMLDivElement | null>(null);
+  const [verifyingRest, setVerifyingReset] = useState(true);
+  const [email, setEmail] = useState('');
+  const [pwordResetting, setPwordResetting] = useState(false);
+  const [pwordReset, setPwordReset] = useState(false);
 
   const validatePassword = (): boolean => {
     if (!pWord) setInfo({ type: 'ERROR', payload: 'Enter password' });
@@ -129,7 +135,29 @@ const Root = () => {
     e.preventDefault();
 
     if (validatePassword() && validateConPassword()) {
-      console.log('valid passwords');
+      try {
+        setPwordResetting(true);
+        await confirmPasswordReset(auth, actionCode, pWord);
+        setPwordReset(true);
+        setInfo({ type: 'SUCCESS', payload: 'Password reset successful' });
+      } catch (error) {
+        setInfo({ type: 'ERROR', payload: 'Password reset failed' });
+        console.log(error);
+      } finally {
+        setPwordResetting(false);
+      }
+    }
+  };
+
+  const verifyReset = async () => {
+    try {
+      setVerifyingReset(true);
+      const email = await verifyPasswordResetCode(auth, actionCode);
+      setEmail(email);
+    } catch (error) {
+      console.log(error);
+    } finally {
+      setVerifyingReset(false);
     }
   };
 
@@ -160,6 +188,7 @@ const Root = () => {
     switch (mode) {
       case 'resetPassword':
         document.title = 'Devie-Reset Password';
+        verifyReset();
         break;
       case 'verifyEmail':
         document.title = 'Devie-Verify Email';
@@ -176,58 +205,85 @@ const Root = () => {
       <div className='center_sect'>
         {mode === 'resetPassword' ? (
           <>
-            <h2 className='sect_heading'>Enter New Password</h2>
-            <form onSubmit={handleReset}>
-              <div className='form_opts'>
-                <div className='form_opt'>
-                  <input
-                    type={`${isShowPword ? 'text' : 'password'}`}
-                    placeholder='New Password'
-                    value={pWord}
-                    onChange={(e) => setPword(e.target.value)}
-                  />
-                  <button
-                    type='button'
-                    onClick={() => setIsShowPword(!isShowPword)}
-                  >
-                    {isShowPword ? <BsEye /> : <BsEyeSlash />}
-                  </button>
-                </div>
-
-                <div className='form_opt'>
-                  <input
-                    type={`${isShowConPword ? 'text' : 'password'}`}
-                    placeholder='Confirm Password'
-                    value={conPword}
-                    onChange={(e) => setConPword(e.target.value)}
-                  />
-                  <button
-                    type='button'
-                    onClick={() => setIsShowConPword(!isShowConPword)}
-                  >
-                    {isShowConPword ? <BsEye /> : <BsEyeSlash />}
-                  </button>
-                </div>
+            <h2 className='sect_heading'>Reset Password</h2>
+            {verifyingRest ? (
+              <div className='loading_wrapper'>
+                <div className='loading'></div>
               </div>
+            ) : !verifyingRest && !email ? (
+              <p className='fail_verify'>
+                Link verification failed. Please request another reset{' '}
+              </p>
+            ) : (
+              <>
+                <h3>Password reset for {email}</h3>
+                <form onSubmit={handleReset}>
+                  <div className='form_opts'>
+                    <div className='form_opt'>
+                      <input
+                        type={`${isShowPword ? 'text' : 'password'}`}
+                        placeholder='New Password'
+                        value={pWord}
+                        onChange={(e) => setPword(e.target.value)}
+                      />
+                      <button
+                        type='button'
+                        onClick={() => setIsShowPword(!isShowPword)}
+                      >
+                        {isShowPword ? <BsEye /> : <BsEyeSlash />}
+                      </button>
+                    </div>
 
-              <button className='reset_btn'>Reset</button>
+                    <div className='form_opt'>
+                      <input
+                        type={`${isShowConPword ? 'text' : 'password'}`}
+                        placeholder='Confirm Password'
+                        value={conPword}
+                        onChange={(e) => setConPword(e.target.value)}
+                      />
+                      <button
+                        type='button'
+                        onClick={() => setIsShowConPword(!isShowConPword)}
+                      >
+                        {isShowConPword ? <BsEye /> : <BsEyeSlash />}
+                      </button>
+                    </div>
+                  </div>
 
-              <div
-                className='info_wrapper'
-                ref={infoWrapperRef}
-                style={
-                  info.type === 'error'
-                    ? { backgroundColor: '#ff000027', color: '#ff0000' }
-                    : info.type === 'success'
-                    ? { backgroundColor: '#00800027', color: '#008800' }
-                    : {}
-                }
-              >
-                <p className='info' ref={infoRef}>
-                  {info.msg}
-                </p>
-              </div>
-            </form>
+                  {pwordReset ? (
+                    <a href={continueUrl}>Return back to Devie</a>
+                  ) : (
+                    <button
+                      className='reset_btn'
+                      disabled={pwordResetting}
+                      style={
+                        pwordResetting
+                          ? { opacity: 0.5, cursor: 'not-allowed' }
+                          : {}
+                      }
+                    >
+                      {pwordResetting ? 'Resetting...' : 'Reset'}
+                    </button>
+                  )}
+
+                  <div
+                    className='info_wrapper'
+                    ref={infoWrapperRef}
+                    style={
+                      info.type === 'error'
+                        ? { backgroundColor: '#ff000027', color: '#ff0000' }
+                        : info.type === 'success'
+                        ? { backgroundColor: '#00800027', color: '#008800' }
+                        : {}
+                    }
+                  >
+                    <p className='info' ref={infoRef}>
+                      {info.msg}
+                    </p>
+                  </div>
+                </form>
+              </>
+            )}
           </>
         ) : mode === 'verifyEmail' ? (
           <>
