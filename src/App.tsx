@@ -124,7 +124,7 @@ const Root = () => {
     try {
       await applyActionCode(auth, actionCode);
     } catch (error) {
-      console.log(`Verification failed: ${error}`);
+      console.log(`Verification failed`);
       setVerifyFailed(true);
     } finally {
       setIsVerifying(false);
@@ -142,7 +142,7 @@ const Root = () => {
         setInfo({ type: 'SUCCESS', payload: 'Password reset successful' });
       } catch (error) {
         setInfo({ type: 'ERROR', payload: 'Password reset failed' });
-        console.log(error);
+        console.log('Reset failed');
       } finally {
         setPwordResetting(false);
       }
