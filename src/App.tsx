@@ -101,7 +101,7 @@ const Root = () => {
     }
 
     // ! ENSURE TO CHANGE BACK TO STRONG PASSWORD AND FOR MAIN APP
-    if (regex.alphaNumeric.test(pWord)) return true;
+    if (regex.strongPword.test(pWord)) return true;
 
     setInfo({
       type: 'ERROR',
