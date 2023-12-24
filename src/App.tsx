@@ -16,8 +16,6 @@ import {
 } from 'react-router-dom';
 import { BsEyeSlash, BsEye } from 'react-icons/bs';
 
-// TODO SET UP THE TRY CATCH FOR RESETTING PASSWORD, AND WE SHOULD BE DONE WITH THIS MINI PROJ
-
 const App = () => {
   const router = createBrowserRouter(
     createRoutesFromElements(
@@ -67,7 +65,6 @@ const Root = () => {
   };
 
   const mode = getParameterByName('mode');
-  // const mode: string = 'resetPassword';
   const actionCode = getParameterByName('oobCode');
   const continueUrl = getParameterByName('continueUrl');
 
@@ -100,7 +97,6 @@ const Root = () => {
       return false;
     }
 
-    // ! ENSURE TO CHANGE BACK TO STRONG PASSWORD AND FOR MAIN APP
     if (regex.strongPword.test(pWord)) return true;
 
     setInfo({
@@ -124,7 +120,6 @@ const Root = () => {
     try {
       await applyActionCode(auth, actionCode);
     } catch (error) {
-      console.log(`Verification failed`);
       setVerifyFailed(true);
     } finally {
       setIsVerifying(false);
@@ -142,7 +137,6 @@ const Root = () => {
         setInfo({ type: 'SUCCESS', payload: 'Password reset successful' });
       } catch (error) {
         setInfo({ type: 'ERROR', payload: 'Password reset failed' });
-        console.log('Reset failed');
       } finally {
         setPwordResetting(false);
       }
@@ -155,7 +149,6 @@ const Root = () => {
       const email = await verifyPasswordResetCode(auth, actionCode);
       setEmail(email);
     } catch (error) {
-      console.log(error);
     } finally {
       setVerifyingReset(false);
     }
